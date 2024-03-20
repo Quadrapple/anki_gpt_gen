@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+    <script>
+        var endResult = [];
+
+        function getGPTResult() {
+            text = document.getElementById("input").value;
+
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/cgi-bin/entry.sh");
+            xhr.send(text);
+            xhr.responseType = "text";
+
+
+            var data;
+
+            xhr.onload = (data) => {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    data = xhr.response;
+                    console.log(data);
+
+                    endResult = JSON.parse(data);
+                    show();
+                } else {
+                    console.log(`Error:  ${xhr.status}$`);
+                }
+            };
+
+        }
+
+        function show() {
+            out = document.getElementById("output");
+            out.innerHTML = "";
+           
+            for(let i = 0; i < endResult.length; i++) {
+                out.innerHTML += cardHTML(endResult[i], i);
+            }
+            
+        }
+
+        function cardHTML(cardData, ind) {
+            res = '<div';
+            res += ' style="position: relative; margin-left: 30px; text-align: left;">';
+
+            res += '<input style="position: absolute; left: -24px; top: 3px;" type="checkbox" name="chbox" id="chbox' + ind + '" value="' + ind + '">';
+
+            res += cardData["Rus"] + "<br>";
+            res += cardData["Ger"] + "<br>";
+            res += cardData["GerEx1"] + "<br>";
+            res += cardData["GerEx2"] + "<br>";
+            res += cardData["RusEx1"] + "<br>";
+            res += cardData["RusEx3"] + "<br>";
+
+            res += '</div>';
+            return res;
+        }
+
+        function sendLikes() {
+            checks = document.getElementsByName("chbox");
+
+            good = [];
+            for(let i = 0; i < checks.length; i++) {
+                good.push(endResult[checks[i].value]);
+            }
+
+            var goodjson = JSON.stringify(good); 
+
+            const xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "/cgi-bin/record.sh");
+            xhr.send(goodjson);
+            xhr.responseType = "text";
+
+            xhr.onload = () => {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(`Sent:  ${goodjson}`);
+                } else {
+                    console.log(`Error while sending:  ${xhr.status}$`);
+                }
+            };
+        }
+    </script>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>HELLOO!!!</title>
+    </head>
+    <body style="overflow: auto">
+        <div style="display: inline-block; height: 400px;">
+            <label>Введите слова</label><br>
+            <textarea style="height: 300px; resize: none;" type="text" id="input" name="test_msg"></textarea><br>
+            <button type="button" onclick="getGPTResult()" id="btn1" name="submit_btn">Отправить</button><br>
+        </div>
+        <div style="display: inline-block; height: 350px;">
+            <label>Результат</label><br>
+            <div style="height: 311px; overflow-y: auto; margin: 0px" type="text" id="output" name="test_msg">
+            </div>
+            <a href="/GerRus_Auto_Cloze.apkg" onclick="sendLikes()" download><button type="button" id="btn1" name="submit_btn">Скачать</button></a><br>
+        </div>
+    </body>
+</html>

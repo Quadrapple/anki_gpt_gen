@@ -1,10 +1,9 @@
 #!/bin/bash
 
 
-inp=$(cat)
+inp=$(cat <&0)
 
 echo "Content-type: text/html; charset=utf8"
 echo
 echo
-#echo $(cat tOut.txt)
-echo $(echo $inp | openai-env/bin/python main.py)
+echo $(echo "$inp" | openai-env/bin/python main.py)

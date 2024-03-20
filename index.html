@@ -11,6 +11,7 @@
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/cgi-bin/entry.sh");
             xhr.send(text);
+            console.log("SENT: " + text);
             xhr.responseType = "text";
 
 
@@ -51,7 +52,7 @@
             res += cardData["GerEx1"] + "<br>";
             res += cardData["GerEx2"] + "<br>";
             res += cardData["RusEx1"] + "<br>";
-            res += cardData["RusEx3"] + "<br>";
+            res += cardData["RusEx2"] + "<br>";
 
             res += '</div>';
             return res;

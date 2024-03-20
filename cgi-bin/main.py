@@ -16,12 +16,13 @@ def elem(l, i):
 for line in sys.stdin:
     lineStripped = line.rstrip();
     entry = lineStripped.split(':')
+    
 
     request = Request(elem(entry, 0), elem(entry, 1), elem(entry, 2))
     requests.append(request)
 
-res = ask(repr(requests))
-print(res)
+res, strRes = askMany(requests)
+print(json.dumps(res))
 
-convert(json.loads(res))
+convert(res)
 
